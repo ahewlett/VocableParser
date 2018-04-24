@@ -161,26 +161,36 @@ namespace VocableParser
         private IList<string> PermutateAllComponents()
         {
             var words = new List<string>();
-            WordStructureComponent currentComponent = null;
 
-            foreach (WordStructureComponent nextComponent in Components)
+            // if only one component exists, we'll just add it's characters to the word list.
+            // otherwise, we'll loop through the components and permutate their characters.
+            if (Components.Count == 1)
             {
-                if (currentComponent == null)
-                {
-                    currentComponent = nextComponent;
-                    continue;
-                }
-                else
-                {
-                    var list = currentComponent.Permutate(nextComponent);
-                    currentComponent = new WordStructureComponent(list.ToArray());
-                    words.AddRange(list);
-                }
+                words.AddRange(Components.First().Characters);
             }
+            else
+            {
+                WordStructureComponent currentComponent = null;
 
-            // remove words that have less characters than the number of components.
-            words.RemoveAll(c => c.Length < Components.Count);
+                foreach (WordStructureComponent nextComponent in Components)
+                {
+                    if (currentComponent == null)
+                    {
+                        currentComponent = nextComponent;
+                        continue;
+                    }
+                    else
+                    {
+                        var list = currentComponent.Permutate(nextComponent);
+                        currentComponent = new WordStructureComponent(list.ToArray());
+                        words.AddRange(list);
+                    }
+                }
 
+                // remove words that have less characters than the number of components.
+                words.RemoveAll(c => c.Length < Components.Count);
+            }
+            
             return words;
         }
 
