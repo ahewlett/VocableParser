@@ -96,7 +96,6 @@ namespace VocableParser
             var structures = GetStructureSubsets();
             foreach (WordStructure structure in structures)
             {
-                Console.WriteLine(structure.ToString());
                 words.AddRange(structure.PermutateAllComponents());
             }
 
