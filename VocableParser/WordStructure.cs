@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VocableParser.Comparers;
 using VocableParser.Constants;
 
 namespace VocableParser
@@ -134,24 +135,34 @@ namespace VocableParser
         /// <returns></returns>
         private IList<WordStructure> GetStructureSubsets()
         {
-            // TODO: need to fix bug where not all subsets are generated.
-            // ie. for (V)VC(V) the following subsets are created: (V)VC(V), (V)VC, VC. we're missing VC(V).
-            var structures = new List<WordStructure>();
-            var tempComponents = new List<WordStructureComponent>(Components);
+            // initialize list of word structures starting with this one.
+            var structures = new List<WordStructure>() {
+                new WordStructure(Components.ToArray())
+            };
 
-            // add the default structure to the list.
-            structures.Add(new WordStructure(Components.ToArray()));
+            // generate the combinations of subsets for this word structure.
+            GetCombinations(this, structures);
 
-            // loop through the optional components in reverse.
-            foreach (WordStructureComponent component in tempComponents.Where(c => c.IsOptional).Reverse())
+            // since the GetCombinations method returns duplicate word structures,
+            // we want to return a distinct list.
+            return structures.Distinct(new WordStructureComparer()).ToList();
+        }
+
+        private void GetCombinations(WordStructure instr, List<WordStructure> outstr)
+        {
+            var comps = instr.Components.ToList();
+            for (int i = 0; i < comps.Count(); i++)
             {
-                // generate a new structure with the current component removed.
-                tempComponents.Remove(component);
-                var structure = new WordStructure(tempComponents.ToArray());
-                structures.Add(structure);
+                WordStructureComponent wsc = instr.Components[i];
+                if (wsc.IsOptional)
+                {
+                    comps.RemoveAt(i);
+                    var str = new WordStructure(comps.ToArray());
+                    outstr.Add(str);
+                    GetCombinations(str, outstr);
+                    comps.Insert(i, wsc);
+                }
             }
-
-            return structures;
         }
 
         /// <summary>
