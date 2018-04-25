@@ -148,6 +148,11 @@ namespace VocableParser
             return structures.Distinct(new WordStructureComparer()).ToList();
         }
 
+        /// <summary>
+        /// Generates all subset <see cref="WordStructure"/> combinations of the <see cref="WordStructure"/> passed in.
+        /// </summary>
+        /// <param name="instr"></param>
+        /// <param name="outstr"></param>
         private void GetCombinations(WordStructure instr, List<WordStructure> outstr)
         {
             var comps = instr.Components.ToList();
