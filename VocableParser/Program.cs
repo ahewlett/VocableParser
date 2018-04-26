@@ -54,15 +54,22 @@ namespace VocableParser
 
         private static void PrintEnumerable(IEnumerable<string> e)
         {
+            e = e.OrderBy(s => s.Length).ThenBy(s => s);
+
+            var maxLength = e.Count().ToString().Length;
+
             int lineNum = 1;
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < e.Count(); i++)
             {
-                sb.AppendFormat("> {0}. {1}", lineNum, e.ElementAt(i));
+                sb.AppendFormat("> {0}. {1}", 
+                    lineNum.ToString().PadLeft(maxLength, '0'), 
+                    e.ElementAt(i));
                 sb.AppendLine();
                 lineNum++;
             }
             Console.Write(sb.ToString());
         }
+
     }
 }
