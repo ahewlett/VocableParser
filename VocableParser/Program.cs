@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VocableParser.Constants;
+using VocableParser.Utils;
 
 namespace VocableParser
 {
@@ -38,38 +37,23 @@ namespace VocableParser
             }
 
             // build the word list.
+            var currentTime = DateTime.Now.TimeOfDay;
             var words = structure.BuildWords();
+            var elapsedTime = DateTime.Now.TimeOfDay.Subtract(currentTime);
 
-            // print the results.
+            // print stats about the generated results.
             Console.WriteLine();
             Console.WriteLine("-------------------------------------");
-            Console.WriteLine("| Generated Words                   |");
+            Console.WriteLine("| Generated Words (in {0:0.0000} secs)  |", elapsedTime.TotalSeconds);
             Console.WriteLine("-------------------------------------");
+            Console.WriteLine("| Total Words: {0}", words.Count());
+            Console.WriteLine();
 
-            PrintEnumerable(words);
+            // print the results.
+            ConsoleUtils.WriteListWithLineNumbers(words.OrderBy(s => s.Length).ThenBy(s => s));
 
             // prevent app from closing.
             Console.ReadLine();
         }
-
-        private static void PrintEnumerable(IEnumerable<string> e)
-        {
-            e = e.OrderBy(s => s.Length).ThenBy(s => s);
-
-            var maxLength = e.Count().ToString().Length;
-
-            int lineNum = 1;
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < e.Count(); i++)
-            {
-                sb.AppendFormat("> {0}. {1}", 
-                    lineNum.ToString().PadLeft(maxLength, '0'), 
-                    e.ElementAt(i));
-                sb.AppendLine();
-                lineNum++;
-            }
-            Console.Write(sb.ToString());
-        }
-
     }
 }
