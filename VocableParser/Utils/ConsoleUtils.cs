@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VocableParser.Models;
 
 namespace VocableParser.Utils
 {
@@ -30,17 +31,17 @@ namespace VocableParser.Utils
         /// <summary>
         /// Writes a list to the console having each item on its own line and numbered.
         /// </summary>
-        /// <param name="e"></param>
-        public static void WriteListWithLineNumbers(IEnumerable<string> e)
+        /// <param name="words"></param>
+        public static void WriteListWithLineNumbers(IEnumerable<Word> words)
         {
-            var maxLength = e.Count().ToString().Length;
+            var maxLength = words.Count().ToString().Length;
 
             int lineNum = 1;
-            for (int i = 0; i < e.Count(); i++)
+            for (int i = 0; i < words.Count(); i++)
             {
                 Console.WriteLine("> {0}. {1}",
                     lineNum.ToString().PadLeft(maxLength, '0'),
-                    e.ElementAt(i));
+                    words.ElementAt(i).ToString());
                 lineNum++;
             }
         }

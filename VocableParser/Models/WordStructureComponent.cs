@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using VocableParser.Models;
 
 namespace VocableParser
 {
     public class WordStructureComponent
     {
         public bool IsOptional { get; set; }
-        public IList<string> Characters { get; set; }
+        public IList<Word> Words { get; set; }
         public char Symbol { get; set; }
 
         /// <summary>
@@ -13,16 +14,16 @@ namespace VocableParser
         /// </summary>
         public WordStructureComponent()
         {
-            Characters = new List<string>();
+            Words = new List<Word>();
         }
 
         /// <summary>
         /// Builds a <see cref="WordStructureComponent"/> with the specified list of characters.
         /// </summary>
-        /// <param name="characters"></param>
-        public WordStructureComponent(params string[] characters)
+        /// <param name="words"></param>
+        public WordStructureComponent(params Word[] words)
         {
-            Characters = characters;
+            Words = words;
         }
 
         /// <summary>
@@ -30,19 +31,22 @@ namespace VocableParser
         /// </summary>
         /// <param name="component"></param>
         /// <returns></returns>
-        public IEnumerable<string> Permutate(WordStructureComponent component)
+        public IEnumerable<Word> Permutate(WordStructureComponent component)
         {
-            var permCharacters = new List<string>();
+            var permWords = new List<Word>();
 
-            foreach (string character in Characters)
+            foreach (Word word in Words)
             {
-                foreach (string newCharacter in component.Characters)
+                foreach (Word newWord in component.Words)
                 {
-                    permCharacters.Add(character + newCharacter);
+                    Word combinedWord = new Word();
+                    combinedWord.Sounds.AddRange(word.Sounds);
+                    combinedWord.Sounds.AddRange(newWord.Sounds);
+                    permWords.Add(combinedWord);
                 }
             }
 
-            return permCharacters;
+            return permWords;
         }
     }
 }

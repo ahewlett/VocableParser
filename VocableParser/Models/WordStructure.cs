@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using VocableParser.Comparers;
 using VocableParser.Constants;
+using VocableParser.Models;
 
-namespace VocableParser
+namespace VocableParser.Models
 {
     public class WordStructure
     {
@@ -72,14 +73,14 @@ namespace VocableParser
         /// Fills all components that have a matching symbol with the specified characters.
         /// </summary>
         /// <param name="symbol"></param>
-        /// <param name="characters"></param>
-        public void FillComponents(char symbol, params string[] characters)
+        /// <param name="words"></param>
+        public void FillComponents(char symbol, params Word[] words)
         {
             if (Components.Count == 0) throw new Exception("No components to fill.");
 
             foreach (WordStructureComponent component in Components.Where(c => c.Symbol == symbol))
             {
-                component.Characters = characters;
+                component.Words = words;
             }
         }
 
@@ -87,11 +88,11 @@ namespace VocableParser
         /// Builds the structure's comprehensive list of words.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> BuildWords()
+        public IEnumerable<Word> BuildWords()
         {
             if (Components.Count == 0) throw new Exception("At least one component must exist to build words.");
 
-            var words = new List<string>();
+            var words = new List<Word>();
 
             var structures = GetStructureSubsets();
             foreach (WordStructure structure in structures)
@@ -173,15 +174,15 @@ namespace VocableParser
         /// Creates a permutation of words using all components in this word structure.
         /// </summary>
         /// <returns></returns>
-        private IList<string> PermutateAllComponents()
+        private IList<Word> PermutateAllComponents()
         {
-            var words = new List<string>();
+            var words = new List<Word>();
 
             // if only one component exists, we'll just add it's characters to the word list.
             // otherwise, we'll loop through the components and permutate their characters.
             if (Components.Count == 1)
             {
-                words.AddRange(Components.First().Characters);
+                words.AddRange(Components.First().Words);
             }
             else
             {
@@ -203,7 +204,7 @@ namespace VocableParser
                 }
 
                 // remove words that have less characters than the number of components.
-                words.RemoveAll(c => c.Length < Components.Count);
+                words.RemoveAll(w => w.Sounds.Count < Components.Count);
             }
             
             return words;

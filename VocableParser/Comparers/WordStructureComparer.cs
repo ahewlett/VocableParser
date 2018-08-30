@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using VocableParser.Models;
 
 namespace VocableParser.Comparers
 {

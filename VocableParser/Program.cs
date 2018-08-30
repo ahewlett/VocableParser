@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using VocableParser.Constants;
+using VocableParser.Models;
 using VocableParser.Utils;
 
 namespace VocableParser
@@ -32,8 +34,16 @@ namespace VocableParser
             foreach (char letter in uniqueChars)
             {
                 Console.Write(String.Format("> Enter values for {0}: ", letter));
-                var chars = Console.ReadLine();
-                structure.FillComponents(letter, chars.Split(','));
+                var ipaUnicodes = Console.ReadLine();
+                List<Word> baseWords = new List<Word>();
+                foreach (string unicode in ipaUnicodes.Split(','))
+                {
+                    Sound sound = new Sound(unicode);
+                    Word word = new Word(sound);
+                    baseWords.Add(word);
+                }
+
+                structure.FillComponents(letter, baseWords.ToArray());
             }
 
             // build the word list.
@@ -50,7 +60,8 @@ namespace VocableParser
             Console.WriteLine();
 
             // print the results.
-            ConsoleUtils.WriteListWithLineNumbers(words.OrderBy(s => s.Length).ThenBy(s => s));
+            var sortedWords = words.OrderBy(w => w.Sounds.Count).ThenBy(w => w);
+            ConsoleUtils.WriteListWithLineNumbers(sortedWords);
 
             // prevent app from closing.
             Console.ReadLine();
